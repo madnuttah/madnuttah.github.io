@@ -1,4 +1,4 @@
-name: Build and Deploy GitHub Pages
+name: GitHub Pages
 
 on:
   push:
@@ -15,21 +15,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository (with submodules)
+      - name: Checkout repo with submodules
         uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
 
-      - name: Set up Pages
+      - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Build site
         run: |
           mkdir -p _site
-          # adjust this to what you actually want to publish:
-          cp README.md _site/ 2>/dev/null || true
-          cp -r docs/* _site/ 2>/dev/null || true
+          cp -r ./* _site/ 2>/dev/null || true
+          git submodule foreach 'mkdir -p "$toplevel/_site/$name" && cp -r * "$toplevel/_site/$name" 2>/dev/null || true'
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -44,6 +43,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

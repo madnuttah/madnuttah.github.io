@@ -1,0 +1,9 @@
+[submodule "unbound-docker"]
+	path = unbound-docker
+	url = https://github.com/madnuttah/unbound-docker.git
+[submodule "openssl-buildenv"]
+	path = openssl-buildenv
+	url = https://github.com/madnuttah/openssl-buildenv.git
+[submodule "unbound-docker-stats"]
+	path = unbound-docker-stats
+	url = https://github.com/madnuttah/unbound-docker-stats.git

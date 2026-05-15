@@ -29,13 +29,17 @@ jobs:
           mkdir -p _site
           cp index.html _site/
       
-          git submodule foreach '
-            mkdir -p "$toplevel/_site/$name"
-            cp -r * "$toplevel/_site/$name" 2>/dev/null || true
-            if [ ! -f "$toplevel/_site/$name/index.html" ]; then
-              echo "<h1>$name</h1><p>No index.html found in this repo.</p>" > "$toplevel/_site/$name/index.html"
+          for d in */ ; do
+            if [ -d "$d/.git" ]; then
+              name=$(basename "$d")
+              mkdir -p "_site/$name"
+              cp -r "$d"/* "_site/$name" 2>/dev/null || true
+              if [ ! -f "_site/$name/index.html" ]; then
+                echo "<h1>$name</h1><p>No index.html found in this repo.</p>" > "_site/$name/index.html"
+              fi
             fi
-          '
+          done
+
 
 
       - name: Upload artifact

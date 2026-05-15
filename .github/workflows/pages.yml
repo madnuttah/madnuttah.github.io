@@ -29,14 +29,14 @@ jobs:
           mkdir -p _site
           cp index.html _site/
       
-          for d in */ ; do
-            if [ -d "$d/.git" ]; then
-              name=$(basename "$d")
-              mkdir -p "_site/$name"
-              cp -r "$d"/* "_site/$name" 2>/dev/null || true
-              if [ ! -f "_site/$name/index.html" ]; then
-                echo "<h1>$name</h1><p>No index.html found in this repo.</p>" > "_site/$name/index.html"
-              fi
+          git submodule update --init --recursive
+      
+          for path in $(git config --file .gitmodules --get-regexp path | awk '{print $2}'); do
+            name=$(basename "$path")
+            mkdir -p "_site/$name"
+            git -C "$path" archive HEAD | tar -x -C "_site/$name"
+            if [ ! -f "_site/$name/index.html" ]; then
+              echo "<h1>$name</h1><p>Repo content deployed.</p>" > "_site/$name/index.html"
             fi
           done
 

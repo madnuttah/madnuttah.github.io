@@ -27,9 +27,16 @@ jobs:
       - name: Build site
         run: |
           mkdir -p _site
-          cp index.html _site/ 2>/dev/null || true
-          find . -maxdepth 1 -type f ! -name "index.html" -exec cp {} _site/ \;
-          git submodule foreach 'mkdir -p "$toplevel/_site/$name" && cp -r * "$toplevel/_site/$name" 2>/dev/null || true'
+          cp index.html _site/
+      
+          git submodule foreach '
+            mkdir -p "$toplevel/_site/$name"
+            cp -r * "$toplevel/_site/$name" 2>/dev/null || true
+            if [ ! -f "$toplevel/_site/$name/index.html" ]; then
+              echo "<h1>$name</h1><p>No index.html found in this repo.</p>" > "$toplevel/_site/$name/index.html"
+            fi
+          '
+
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
